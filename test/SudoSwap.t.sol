@@ -10,12 +10,12 @@ import "sudoswap/LSSVMPairEnumerableETH.sol";
 import "sudoswap/LSSVMPair.sol";
 
 import "../src/types/SSMintableNFT.sol";
-import "../src/SudoSwapMintWrapper.sol";
+import "../src/SudoswapMintWrapper.sol";
 import "./utils/Utils.sol";
 import "./Base.t.sol";
 
-contract SudoSwapMintWrapperTest is BaseTest {
-    SudoSwapMintWrapper wrapper;
+contract SudoswapMintWrapperTest is BaseTest {
+    SudoswapMintWrapper wrapper;
     SSMintableNFT nft;
 
     // mainnet
@@ -32,9 +32,9 @@ contract SudoSwapMintWrapperTest is BaseTest {
         vm.startPrank(deployer);
 
         nft = new SSMintableNFT(owner, dev);
-        wrapper = new SudoSwapMintWrapper(address(nft), nft.MAX_SUPPLY() - 100);
+        wrapper = new SudoswapMintWrapper(address(nft), nft.MAX_SUPPLY() - 100);
 
-        nft.setSudoSwapMintWrapperContract(address(wrapper));
+        nft.setSudoswapMintWrapperContract(address(wrapper));
 
         vm.stopPrank();
     }

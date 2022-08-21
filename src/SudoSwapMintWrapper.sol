@@ -12,7 +12,7 @@ error TokenAlreadyMinted();
 error IndexOutOfBounds();
 error TokenDNE();
 
-contract SudoSwapMintWrapper is Ownable, DummyERC721 {
+contract SudoswapMintWrapper is Ownable, DummyERC721 {
     using Strings for uint256;
 
     event ConsecutiveTransfer(uint256 indexed fromTokenId, uint256 toTokenId, address indexed fromAddress, address indexed toAddress);

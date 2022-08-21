@@ -123,7 +123,7 @@ contract SSMintableNFT is ISSMintableNFT, Ownable, ERC721A, IERC2981, Reentrancy
         PUBLIC_SALE_PRICE = price_;
     }
 
-    function setSudoSwapMintWrapperContract(address ssmw_) external onlyOwner {
+    function setSudoswapMintWrapperContract(address ssmw_) external onlyOwner {
         _ssmw = ssmw_;
     }
 

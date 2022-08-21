@@ -2,12 +2,12 @@
 pragma solidity ^0.8.13;
 
 import "../src/types/SSMintableNFT.sol";
-import "../src/SudoSwapMintWrapper.sol";
+import "../src/SudoswapMintWrapper.sol";
 import "./utils/Utils.sol";
 import "./Base.t.sol";
 
-contract SudoSwapMintWrapperTest is BaseTest {
-    SudoSwapMintWrapper wrapper;
+contract SudoswapMintWrapperTest is BaseTest {
+    SudoswapMintWrapper wrapper;
     SSMintableNFT nft;
 
     function setUp() public override {
@@ -16,9 +16,9 @@ contract SudoSwapMintWrapperTest is BaseTest {
         vm.startPrank(deployer);
 
         nft = new SSMintableNFT(owner, dev);
-        wrapper = new SudoSwapMintWrapper(address(nft), nft.MAX_SUPPLY() - 100);
+        wrapper = new SudoswapMintWrapper(address(nft), nft.MAX_SUPPLY() - 100);
 
-        nft.setSudoSwapMintWrapperContract(address(wrapper));
+        nft.setSudoswapMintWrapperContract(address(wrapper));
 
         vm.stopPrank();
     }

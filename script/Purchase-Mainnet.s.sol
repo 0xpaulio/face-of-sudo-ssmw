@@ -8,11 +8,11 @@ import "sudoswap/LSSVMPairETH.sol";
 import "sudoswap/LSSVMRouter.sol";
 
 import "../src/types/SSMintableNFT.sol";
-import "../src/SudoSwapMintWrapper.sol";
+import "../src/SudoswapMintWrapper.sol";
 
 contract PurchaseScript is Script {
     SSMintableNFT nft = SSMintableNFT(payable(0x8B8cC9233c7Bc4ab54bdaE2e9a9c30d08fE07bBE));
-    SudoSwapMintWrapper wrapper = SudoSwapMintWrapper(payable(0x7e90E60b5200A1E011ddA6AFeD651f31bfb7a085));
+    SudoswapMintWrapper wrapper = SudoswapMintWrapper(payable(0x7e90E60b5200A1E011ddA6AFeD651f31bfb7a085));
     
     LSSVMPairETH pool_ = LSSVMPairETH(payable(0xC090706Aad5d65597449D6cD067E36aE4c4883ED));
     

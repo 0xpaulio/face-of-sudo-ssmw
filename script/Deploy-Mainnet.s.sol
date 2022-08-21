@@ -10,10 +10,10 @@ import "sudoswap/LSSVMPair.sol";
 
 import "../src/types/SSMintableNFT.sol";
 import "../src/types/Forwarder.sol";
-import "../src/SudoSwapMintWrapper.sol";
+import "../src/SudoswapMintWrapper.sol";
 
 contract ContractScript is Script {
-    SudoSwapMintWrapper wrapper;
+    SudoswapMintWrapper wrapper;
     SSMintableNFT nft;
     Forwarder forwarder;
 
@@ -27,9 +27,9 @@ contract ContractScript is Script {
     function run() public {
         vm.startBroadcast();
         nft = new SSMintableNFT(dev, dev);
-        wrapper = new SudoSwapMintWrapper(address(nft), 6300);
+        wrapper = new SudoswapMintWrapper(address(nft), 6300);
 
-        nft.setSudoSwapMintWrapperContract(address(wrapper));
+        nft.setSudoswapMintWrapperContract(address(wrapper));
 
         // Initialize Forward, but change ADDR2 later to point to pair trade pool
         forwarder = new Forwarder(dev, dev);
