@@ -3,16 +3,21 @@ pragma solidity ^0.8.13;
 
 import { Ownable } from "openzeppelin/access/Ownable.sol";
 import { Strings } from "openzeppelin/utils/Strings.sol";
+import { IERC165 } from "openzeppelin/utils/introspection/IERC165.sol";
+import { IERC721 } from "openzeppelin/token/ERC721/IERC721.sol";
+
+
 import { ERC721TokenReceiver } from "solmate/tokens/ERC721.sol";
 
 import { ISSMintableNFT } from "./interfaces/ISSMintableNFT.sol";
+import { ISSMintWrapperNFT } from "./interfaces/ISSMintWrapperNFT.sol";
 import { DummyERC721 } from "./types/DummyERC721.sol";
 
 error TokenAlreadyMinted();
 error IndexOutOfBounds();
 error TokenDNE();
 
-contract SudoswapMintWrapper is Ownable, DummyERC721 {
+contract SudoswapMintWrapper is Ownable, DummyERC721, ISSMintWrapperNFT {
     using Strings for uint256;
 
     event ConsecutiveTransfer(uint256 indexed fromTokenId, uint256 toTokenId, address indexed fromAddress, address indexed toAddress);
@@ -90,6 +95,19 @@ contract SudoswapMintWrapper is Ownable, DummyERC721 {
     }
 
     /*//////////////////////////////////////////////////////////////
+                        MINT WRAPPER LOGIC
+    //////////////////////////////////////////////////////////////*/
+
+    /**
+     * @notice This accessor function is used to get the parent NFT contract that 
+     * this wrapper mints.
+     * @return address the contract address of the SSMintableNFT compliant smart cotnract.
+     */
+    function getMintContract() external returns (address) {
+        return address(SSMT);
+    }
+
+    /*//////////////////////////////////////////////////////////////
                     ERC721 ENUMERABLE DUMMY LOGIC
     //////////////////////////////////////////////////////////////*/
 
@@ -119,26 +137,26 @@ contract SudoswapMintWrapper is Ownable, DummyERC721 {
                 // : "";
     }
 
-    function ownerOf(uint256 id) public view override returns (address owner) {
+    function ownerOf(uint256 id) public view override(DummyERC721, IERC721) returns (address owner) {
         if (id > this.totalSupply()) revert TokenAlreadyMinted();
         return _registrar;
     }
 
-    function balanceOf(address owner) public view override returns (uint256) {
+    function balanceOf(address owner) public view override(DummyERC721, IERC721) returns (uint256) {
         if (owner == _registrar) return _tokenIdCap - _mintedTokenCount;
         return 0;
     }
 
-    function getApproved(uint256) public view override returns (address) {
+    function getApproved(uint256) public view override(DummyERC721, IERC721) returns (address) {
         return _registrar;
     }
 
-    function isApprovedForAll(address owner_, address operator_) public view override returns (bool) {
+    function isApprovedForAll(address owner_, address operator_) public view override(DummyERC721, IERC721) returns (bool) {
         if (owner_ == _registrar) return _authorizedMinter[operator_];
         return false;
     }
 
-    function setApprovalForAll(address operator, bool approved) public override {
+    function setApprovalForAll(address operator, bool approved) public override(DummyERC721, IERC721) {
         if (!(msg.sender == _registrar || msg.sender == this.owner()))
             return;
 
@@ -146,7 +164,7 @@ contract SudoswapMintWrapper is Ownable, DummyERC721 {
         emit ApprovalForAll(msg.sender, operator, approved);
     }
     
-    function approve(address, uint256) public pure override {
+    function approve(address, uint256) public pure override(DummyERC721, IERC721) {
         return;
     }
 
@@ -158,7 +176,7 @@ contract SudoswapMintWrapper is Ownable, DummyERC721 {
         address from,
         address to,
         uint256 id
-    ) public override {
+    ) public override(DummyERC721, IERC721) {
         require(from == _registrar, "WRONG_FROM");
 
         require(to != address(0), "INVALID_RECIPIENT");
@@ -182,7 +200,7 @@ contract SudoswapMintWrapper is Ownable, DummyERC721 {
         address from,
         address to,
         uint256 id
-    ) public override {
+    ) public override(DummyERC721, IERC721) {
         transferFrom(from, to, id);
 
         // Safety check is performed in the permissionedMint function
@@ -199,7 +217,7 @@ contract SudoswapMintWrapper is Ownable, DummyERC721 {
         address to,
         uint256 id,
         bytes calldata
-    ) public override {
+    ) public override(DummyERC721, IERC721) {
         transferFrom(from, to, id);
 
         // Safety check is performed in the permissionedMint function
@@ -209,6 +227,19 @@ contract SudoswapMintWrapper is Ownable, DummyERC721 {
         //         ERC721TokenReceiver.onERC721Received.selector,
         //     "UNSAFE_RECIPIENT"
         // );
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                        INTROSPECTION LOGIC
+    //////////////////////////////////////////////////////////////*/
+
+    /**
+     * @dev See {IERC165-supportsInterface}.
+     */
+    function supportsInterface(bytes4 interfaceId) public view virtual override(DummyERC721, IERC165) returns (bool) {
+        return
+        interfaceId == type(ISSMintWrapperNFT).interfaceId ||
+        super.supportsInterface(interfaceId);
     }
 
     /*//////////////////////////////////////////////////////////////

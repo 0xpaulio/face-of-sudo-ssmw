@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity >=0.8.0;
 
-import "openzeppelin/token/ERC721/extensions/IERC721Enumerable.sol";
+import { IERC721Enumerable} from "openzeppelin/token/ERC721/extensions/IERC721Enumerable.sol";
 
 abstract contract DummyERC721 is IERC721Enumerable {
 

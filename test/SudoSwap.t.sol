@@ -41,7 +41,8 @@ contract SudoswapMintWrapperTest is BaseTest {
 
     function testCreatePool_mainnetFork() public {
         hoax(dev, 100 ether);
-        deployer.call{value: 10 ether}("");
+        (bool success, ) = deployer.call{value: 10 ether}("");
+        if (!success) revert();
 
         vm.startPrank(deployer);
 
@@ -65,10 +66,10 @@ contract SudoswapMintWrapperTest is BaseTest {
 
     function testFull_mainnetFork() public {
         hoax(dev, 100 ether);
-        deployer.call{value: 10 ether}("");
+        (bool success, ) = deployer.call{value: 10 ether}("");
+        if (!success) revert();
 
         vm.startPrank(deployer);
-
         uint128 spotPrice = 0.001 ether;
         uint128 delta = 1 ether + 0.001 ether;
         uint256 numItems = 5;
@@ -86,15 +87,13 @@ contract SudoswapMintWrapperTest is BaseTest {
             initialNFTs_
         );
 
-        wrapper.setAuthorizedMinter(address(pool_));
-        wrapper.setRegistrar(address(pool_));
+        wrapper.connectWrapperToPool(address(pool_));
 
         (
             CurveErrorCodes.Error error,
             ,
             ,
             uint256 inputValue,
-            // uint256 protocolFee
         ) = pool_.getBuyNFTQuote(numItems);
 
         require(error == CurveErrorCodes.Error.OK, "Bonding curve error");
